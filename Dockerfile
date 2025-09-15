@@ -1,5 +1,5 @@
 # Utiliser une image Node.js comme base
-FROM node:22
+FROM node:22-alpine
 
 ARG DATABASE_URL
 
