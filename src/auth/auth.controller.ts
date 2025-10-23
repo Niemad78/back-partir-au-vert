@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './auth.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { User } from './get-user.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -18,18 +19,19 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('change-password')
-  public async changePassword(
+  @Put('me/modify')
+  public async modify(
+    @User('userId') userId: string,
     @Body()
     body: LoginDto,
   ) {
-    await this.authService.changePassword({ body });
+    await this.authService.changeInformation(body, userId);
 
-    return { ok: true, message: 'Mot de passe changé avec succès' };
+    return { ok: true, message: 'Informations modifiées avec succès' };
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('me')
+  @Get('me/verify')
   public me() {
     return { ok: true, message: 'Connexion réussie 🎉' };
   }

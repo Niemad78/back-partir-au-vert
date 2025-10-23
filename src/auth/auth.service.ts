@@ -3,6 +3,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma.service';
 import { LoginProps, UserPayload } from './types';
+import { LoginDto } from './auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -34,22 +35,34 @@ export class AuthService {
     return this.authentificationUtilisateur({ userId: utilisateurExistant.id });
   }
 
-  public async changePassword({ body }: LoginProps): Promise<void> {
-    const { email, password: newPassword } = body;
-
+  public async changeInformation(
+    body: LoginDto,
+    userId: string,
+  ): Promise<void> {
     const utilisateurExistant = await this.prismaService.user.findUnique({
-      where: { email },
+      where: { id: userId },
     });
+
+    const emailExistant = await this.prismaService.user.findUnique({
+      where: { email: body.email },
+    });
+
+    if (emailExistant?.email === body.email && emailExistant.id !== userId) {
+      throw new UnauthorizedException('Cet email est déjà utilisé');
+    }
 
     if (!utilisateurExistant) {
       throw new UnauthorizedException('Utilisateur inconnu');
     }
 
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const hashedPassword = await bcrypt.hash(body.password, 10);
 
     await this.prismaService.user.update({
-      where: { email },
-      data: { password: hashedPassword },
+      where: { id: userId },
+      data: {
+        email: body.email,
+        password: hashedPassword,
+      },
     });
 
     return;
