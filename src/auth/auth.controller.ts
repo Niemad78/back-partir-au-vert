@@ -14,18 +14,23 @@ export class AuthController {
   ) {
     const token = await this.authService.login({ body });
 
-    return { ok: true, token };
+    return { ok: true, token, message: 'Connexion réussie 🎉' };
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('logout')
-  public logout() {
-    return { ok: true };
+  @Post('change-password')
+  public async changePassword(
+    @Body()
+    body: LoginDto,
+  ) {
+    await this.authService.changePassword({ body });
+
+    return { ok: true, message: 'Mot de passe changé avec succès' };
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
   public me() {
-    return { ok: true, message: 'cookie JWT valide 🎉' };
+    return { ok: true, message: 'Connexion réussie 🎉' };
   }
 }

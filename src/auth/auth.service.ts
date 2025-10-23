@@ -1,7 +1,7 @@
+import bcrypt from 'bcrypt';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma.service';
-import bcrypt from 'bcrypt';
 import { LoginProps, UserPayload } from './types';
 
 @Injectable()
@@ -32,6 +32,27 @@ export class AuthService {
     }
 
     return this.authentificationUtilisateur({ userId: utilisateurExistant.id });
+  }
+
+  public async changePassword({ body }: LoginProps): Promise<void> {
+    const { email, password: newPassword } = body;
+
+    const utilisateurExistant = await this.prismaService.user.findUnique({
+      where: { email },
+    });
+
+    if (!utilisateurExistant) {
+      throw new UnauthorizedException('Utilisateur inconnu');
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await this.prismaService.user.update({
+      where: { email },
+      data: { password: hashedPassword },
+    });
+
+    return;
   }
 
   private async isValidePassword(
