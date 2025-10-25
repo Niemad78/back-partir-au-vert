@@ -1,27 +1,42 @@
-import { Injectable } from '@nestjs/common';
+import bcrypt from 'bcrypt';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { LoginDto } from 'src/auth/auth.dto';
 import { PrismaService } from 'src/prisma.service';
-import { User } from './type';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async findAll(): Promise<User[]> {
-    return await this.prismaService.user.findMany({
-      select: {
-        id: true,
-        email: true,
-      },
-    });
-  }
-
-  async findOneById(userId: string): Promise<User | null> {
-    return await this.prismaService.user.findUnique({
+  public async changeInformation(
+    body: LoginDto,
+    userId: string,
+  ): Promise<void> {
+    const utilisateurExistant = await this.prismaService.user.findUnique({
       where: { id: userId },
-      select: {
-        id: true,
-        email: true,
+    });
+
+    const emailExistant = await this.prismaService.user.findUnique({
+      where: { email: body.email },
+    });
+
+    if (emailExistant?.email === body.email && emailExistant.id !== userId) {
+      throw new UnauthorizedException('Cet email est déjà utilisé');
+    }
+
+    if (!utilisateurExistant) {
+      throw new UnauthorizedException('Utilisateur inconnu');
+    }
+
+    const hashedPassword = await bcrypt.hash(body.password, 10);
+
+    await this.prismaService.user.update({
+      where: { id: userId },
+      data: {
+        email: body.email,
+        password: hashedPassword,
       },
     });
+
+    return;
   }
 }
