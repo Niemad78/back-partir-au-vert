@@ -39,4 +39,25 @@ export class UsersService {
 
     return;
   }
+
+  public async createNewUser(body: LoginDto): Promise<void> {
+    const emailExistant = await this.prismaService.user.findUnique({
+      where: { email: body.email },
+    });
+
+    if (emailExistant) {
+      throw new UnauthorizedException('Cet email est déjà utilisé');
+    }
+
+    const hashedPassword = await bcrypt.hash(body.password, 10);
+
+    await this.prismaService.user.create({
+      data: {
+        email: body.email,
+        password: hashedPassword,
+      },
+    });
+
+    return;
+  }
 }

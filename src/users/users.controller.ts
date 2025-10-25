@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { LoginDto } from 'src/auth/auth.dto';
@@ -24,5 +24,16 @@ export class UsersController {
   @Get('me/verify')
   public me() {
     return { ok: true, message: 'Connexion réussie 🎉' };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('new-user')
+  public async newUser(
+    @Body()
+    body: LoginDto,
+  ) {
+    await this.usersService.createNewUser(body);
+
+    return { ok: true, message: 'Utilisateur créé avec succès' };
   }
 }
