@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { LoginDto } from 'src/auth/auth.dto';
@@ -35,5 +44,23 @@ export class UsersController {
     await this.usersService.createNewUser(body);
 
     return { ok: true, message: 'Utilisateur créé avec succès' };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('list')
+  public async listUsers() {
+    const users = await this.usersService.findAllUSers();
+    return { ok: true, users };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('delete/:userId')
+  public async deleteUser(
+    @Param('userId')
+    userId: string,
+  ) {
+    await this.usersService.deleteUser(userId);
+
+    return { ok: true, message: 'Utilisateur supprimé avec succès' };
   }
 }

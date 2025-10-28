@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { LoginDto } from 'src/auth/auth.dto';
 import { PrismaService } from 'src/prisma.service';
+import { UserList } from './types';
 
 @Injectable()
 export class UsersService {
@@ -59,5 +60,20 @@ export class UsersService {
     });
 
     return;
+  }
+
+  public async findAllUSers(): Promise<UserList[]> {
+    return await this.prismaService.user.findMany({
+      select: {
+        id: true,
+        email: true,
+      },
+    });
+  }
+
+  public async deleteUser(userId: string): Promise<LoginDto> {
+    return this.prismaService.user.delete({
+      where: { id: userId },
+    });
   }
 }
