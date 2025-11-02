@@ -3,6 +3,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma.service';
 import { LoginProps, UserPayload } from './types';
+import { Role } from 'src/role.enum';
 
 @Injectable()
 export class AuthService {
@@ -31,7 +32,10 @@ export class AuthService {
       throw new UnauthorizedException('Mot de passe invalide');
     }
 
-    return this.authentificationUtilisateur({ userId: utilisateurExistant.id });
+    return this.authentificationUtilisateur({
+      userId: utilisateurExistant.id,
+      role: utilisateurExistant.role,
+    });
   }
 
   private async isValidePassword(
@@ -41,8 +45,19 @@ export class AuthService {
     return await bcrypt.compare(password, hashedPassword);
   }
 
-  private authentificationUtilisateur({ userId }: UserPayload): string {
-    const payload = { sub: userId };
+  private authentificationUtilisateur({ userId, role }: UserPayload): string {
+    let roleFormate: string;
+    switch (role) {
+      case 'ADMIN':
+        roleFormate = Role.ADMIN;
+        break;
+      case 'SUPER_ADMIN':
+        roleFormate = Role.SUPER_ADMIN;
+        break;
+      default:
+        throw new UnauthorizedException('Rôle utilisateur inconnu');
+    }
+    const payload = { sub: userId, role: roleFormate };
     return this.jwtService.sign(payload);
   }
 }
