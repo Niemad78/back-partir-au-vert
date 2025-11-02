@@ -7,6 +7,7 @@ export type LoginProps = {
 
 export type UserPayload = {
   userId: string;
+  role: string;
 };
 
 export type User = {
