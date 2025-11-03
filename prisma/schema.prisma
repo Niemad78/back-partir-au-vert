@@ -27,3 +27,35 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Activite {
+  id             String      @id @default(cuid())
+  nom            String
+  description    String
+  prix           Float
+  ville          String
+  departement    Int
+  nbPersonnesMax Int
+  themeId        String
+  theme          Theme       @relation(fields: [themeId], references: [id], onDelete: Cascade)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  PointFort      PointFort[]
+}
+
+model Theme {
+  id        String     @id @default(cuid())
+  nom       String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Activite  Activite[]
+}
+
+model PointFort {
+  id         String    @id @default(cuid())
+  nom        String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  activiteId String?
+  activite   Activite? @relation(fields: [activiteId], references: [id])
+}
