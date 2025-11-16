@@ -8,13 +8,13 @@ export class ActivitesService {
 
   async findMany(): Promise<ActiviteOutput[]> {
     return this.prismaService.activite.findMany({
-      include: { theme: true },
+      include: { theme: true, pointFort: true },
     });
   }
 
   async findOne(id: string): Promise<ActiviteOutput | null> {
     return this.prismaService.activite.findUnique({
-      include: { theme: true },
+      include: { theme: true, pointFort: true },
       where: { id },
     });
   }

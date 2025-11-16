@@ -40,7 +40,7 @@ model Activite {
   theme          Theme       @relation(fields: [themeId], references: [id], onDelete: Cascade)
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
-  PointFort      PointFort[]
+  pointFort      PointFort[]
 }
 
 model Theme {
@@ -48,7 +48,7 @@ model Theme {
   nom       String
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-  Activite  Activite[]
+  activite  Activite[]
 }
 
 model PointFort {
