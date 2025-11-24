@@ -7,12 +7,15 @@ export class ThemesService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async findMany(): Promise<ThemeOutput[]> {
-    return this.prismaService.theme.findMany();
+    return this.prismaService.theme.findMany({
+      include: { image: true },
+    });
   }
 
   async findOne(id: string): Promise<ThemeOutput | null> {
     return this.prismaService.theme.findUnique({
       where: { id },
+      include: { image: true },
     });
   }
 

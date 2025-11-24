@@ -4,4 +4,8 @@ export type ThemeDto = {
 
 export type ThemeOutput = ThemeDto & {
   id: string;
+  image?: {
+    id: string;
+    nom: string;
+  } | null;
 };

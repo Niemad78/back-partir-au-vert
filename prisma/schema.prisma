@@ -50,7 +50,7 @@ model Theme {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   activite  Activite[]
-  images    Image[]
+  image     Image?
 }
 
 model PointFort {
@@ -69,6 +69,6 @@ model Image {
   updatedAt  DateTime  @updatedAt
   activiteId String?
   activite   Activite? @relation(fields: [activiteId], references: [id])
-  themeId    String?
+  themeId    String?   @unique
   theme      Theme?    @relation(fields: [themeId], references: [id])
 }
