@@ -41,6 +41,7 @@ model Activite {
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
   pointFort      PointFort[]
+  images         Image[]
 }
 
 model Theme {
@@ -49,6 +50,7 @@ model Theme {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   activite  Activite[]
+  images    Image[]
 }
 
 model PointFort {
@@ -58,4 +60,15 @@ model PointFort {
   updatedAt  DateTime  @updatedAt
   activiteId String?
   activite   Activite? @relation(fields: [activiteId], references: [id])
+}
+
+model Image {
+  id         String    @id @default(cuid())
+  nom        String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  activiteId String?
+  activite   Activite? @relation(fields: [activiteId], references: [id])
+  themeId    String?
+  theme      Theme?    @relation(fields: [themeId], references: [id])
 }
