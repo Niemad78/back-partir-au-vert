@@ -11,6 +11,7 @@ WORKDIR /usr/src/app
 # Copier les fichiers package.json et package-lock.json du monorepo
 COPY package*.json ./
 COPY pnpm-lock.yaml ./
+COPY pnpm-workspace.yaml ./
 COPY prisma ./prisma/
 
 # Installer les dépendances du monorepo
