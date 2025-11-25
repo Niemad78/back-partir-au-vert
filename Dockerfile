@@ -11,16 +11,16 @@ COPY package*.json ./
 COPY prisma ./prisma/
 
 # Installer les dépendances du monorepo
-RUN npm install
+RUN pnpm install
 
 # Copier le reste des fichiers de l'application backend
 COPY . .
 
 # Construire l'application Nest.js
-RUN npm run build
+RUN pnpm run build
 
 # Exposer le port sur lequel l'application va tourner
 EXPOSE 8000
 
 # Démarrer l'application
-CMD ["sh", "-c", "npx prisma migrate deploy && npm start"]
+CMD ["sh", "-c", "npx prisma migrate deploy && pnpm start"]
