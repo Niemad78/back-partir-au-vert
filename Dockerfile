@@ -3,11 +3,14 @@ FROM node:22-alpine
 
 ARG DATABASE_URL
 
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
 # Définir le répertoire de travail
 WORKDIR /usr/src/app
 
 # Copier les fichiers package.json et package-lock.json du monorepo
 COPY package*.json ./
+COPY pnpm-lock.yaml ./
 COPY prisma ./prisma/
 
 # Installer les dépendances du monorepo
