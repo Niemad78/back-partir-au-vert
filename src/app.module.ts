@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
@@ -8,6 +8,7 @@ import { ThemesModule } from './themes/themes.module';
 import { PointsFortModule } from './points-fort/points-fort.module';
 import { ImagesModule } from './images/images.module';
 import { join } from 'path';
+import { LoggingMiddleware } from './logging.middleware';
 
 @Module({
   imports: [
@@ -30,4 +31,8 @@ import { join } from 'path';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggingMiddleware).forRoutes('*');
+  }
+}
