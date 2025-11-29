@@ -7,18 +7,15 @@ import {
   Param,
   Post,
   Put,
-  UploadedFiles,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ActivitesService } from './activites.service';
-import type { ActiviteDto, ActiviteFormData } from './activites.dto';
-import { FilesInterceptor } from '@nestjs/platform-express';
-import { deleteFile, storage } from 'src/file-utils';
+import type { ActiviteDto, ActiviteService } from './activites.dto';
+import { deleteFile } from 'src/file-utils';
 import { ImagesService } from 'src/images/images.service';
+import { LinkImage } from 'src/images/images.dto';
 
-@UseGuards(JwtAuthGuard)
 @Controller('activites')
 export class ActivitesController {
   constructor(
@@ -26,7 +23,7 @@ export class ActivitesController {
     private readonly imagesService: ImagesService,
   ) {}
 
-  @Get('listes')
+  @Get('liste')
   async getAllActivites() {
     const result = await this.activitesService.findMany();
 
@@ -43,41 +40,49 @@ export class ActivitesController {
     return { ok: true, activite: result };
   }
 
-  @Post('create')
-  @UseInterceptors(
-    FilesInterceptor('images', undefined, {
-      limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB limit
-      storage: storage,
-    }),
-  )
+  @UseGuards(JwtAuthGuard)
+  @Post('creation')
   public async createActivite(
     @Body()
-    body: ActiviteFormData,
-    @UploadedFiles() images: Array<Express.Multer.File>,
+    body: ActiviteDto,
   ) {
-    const data: ActiviteDto = {
-      nom: body.nom,
-      description: body.description,
-      prix: parseFloat(body.prix),
-      ville: body.ville,
-      departement: parseInt(body.departement, 10),
-      nbPersonnesMax: parseInt(body.nbPersonnesMax, 10),
-      themeId: body.themeId,
+    const {
+      nom,
+      description,
+      prix,
+      ville,
+      departement,
+      nbPersonnesMax,
+      themeId,
+      imageIds,
+    } = body;
+    const serviceBody: ActiviteService = {
+      nom,
+      description,
+      prix,
+      ville,
+      departement,
+      nbPersonnesMax,
+      themeId,
     };
 
-    const result = await this.activitesService.create(data);
+    const result = await this.activitesService.create(serviceBody);
 
-    for (const image of images) {
-      await this.imagesService.create({
-        activiteId: result.id,
-        nom: image.filename,
-      });
+    if (imageIds && imageIds.length > 0) {
+      for (const imageId of imageIds) {
+        const imageBody: LinkImage = {
+          activiteId: result.id,
+        };
+
+        await this.imagesService.update(imageId, imageBody);
+      }
     }
 
     return { ok: true, activite: result };
   }
 
-  @Put('update/:id')
+  @UseGuards(JwtAuthGuard)
+  @Put('modification/:id')
   async updateActivite(
     @Param('id')
     id: string,
@@ -89,31 +94,8 @@ export class ActivitesController {
     return { ok: true, activite: result };
   }
 
-  @Put('update/:id/images')
-  @UseInterceptors(
-    FilesInterceptor('images', undefined, {
-      limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB limit
-      storage: storage,
-    }),
-  )
-  async updateImageActivite(
-    @Param('id')
-    id: string,
-    @UploadedFiles() images: Array<Express.Multer.File>,
-  ) {
-    for (const image of images) {
-      await this.imagesService.create({
-        activiteId: id,
-        nom: image.filename,
-      });
-    }
-
-    const result = await this.activitesService.findOne(id);
-
-    return { ok: true, activite: result };
-  }
-
-  @Delete('delete/:id')
+  @UseGuards(JwtAuthGuard)
+  @Delete('suppression/:id')
   async deleteActivite(
     @Param('id')
     id: string,
@@ -150,33 +132,5 @@ export class ActivitesController {
     await this.activitesService.delete(id);
 
     return { ok: true };
-  }
-
-  @Delete('delete/:id/image/:imageId')
-  async deleteImageActivite(
-    @Param('id')
-    id: string,
-    @Param('imageId')
-    imageId: string,
-  ) {
-    const image = await this.imagesService.findOne(imageId);
-
-    if (!image) {
-      return { ok: false, message: 'Image non trouvée' };
-    }
-
-    try {
-      await deleteFile(image.nom);
-    } catch {
-      throw new InternalServerErrorException(
-        'Erreur lors de la suppression du fichier',
-      );
-    }
-
-    await this.imagesService.delete(imageId);
-
-    const result = await this.activitesService.findOne(id);
-
-    return { ok: true, activite: result };
   }
 }

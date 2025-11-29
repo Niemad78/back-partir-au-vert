@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { ThemeDto, ThemeOutput } from './themes.dto';
+import { ThemeDto, ThemeOutput, ThemeService } from './themes.dto';
 
 @Injectable()
 export class ThemesService {
@@ -19,7 +19,7 @@ export class ThemesService {
     });
   }
 
-  async create(body: ThemeDto): Promise<ThemeOutput> {
+  async create(body: ThemeService): Promise<ThemeOutput> {
     return await this.prismaService.theme.create({
       data: body,
     });
@@ -28,6 +28,7 @@ export class ThemesService {
   async update(id: string, body: ThemeDto): Promise<ThemeOutput> {
     return this.prismaService.theme.update({
       where: { id },
+      include: { image: true },
       data: body,
     });
   }
