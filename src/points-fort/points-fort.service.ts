@@ -7,14 +7,11 @@ export class PointsFortService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async findMany(): Promise<PointsFortOutput[]> {
-    return this.prismaService.pointFort.findMany({
-      include: { activite: true },
-    });
+    return this.prismaService.pointFort.findMany();
   }
 
   async findOne(id: string): Promise<PointsFortOutput | null> {
     return this.prismaService.pointFort.findUnique({
-      include: { activite: true },
       where: { id },
     });
   }

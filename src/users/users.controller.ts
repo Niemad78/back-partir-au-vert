@@ -16,12 +16,12 @@ import { Role } from 'src/role.enum';
 import { Roles } from 'src/auth/role.decorator';
 import { RolesGuard } from 'src/auth/role.guard';
 
-@Controller('users')
+@Controller('utilisateurs')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Put('me/modify')
+  @Put('me/modification')
   public async modify(
     @User('userId') userId: string,
     @Body()
@@ -33,7 +33,7 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('me/verify')
+  @Get('me/verification')
   public me() {
     return { ok: true, message: 'Connexion réussie 🎉' };
   }
@@ -45,7 +45,7 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Post('new-user')
+  @Post('nouvel-utilisateur')
   @Roles(Role.SUPER_ADMIN)
   public async newUser(
     @Body()
@@ -57,7 +57,7 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Get('list')
+  @Get('liste')
   @Roles(Role.SUPER_ADMIN)
   public async listUsers() {
     const users = await this.usersService.findAllUSers();
@@ -65,7 +65,7 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Delete('delete/:userId')
+  @Delete('suppression/:userId')
   @Roles(Role.SUPER_ADMIN)
   public async deleteUser(
     @Param('userId')

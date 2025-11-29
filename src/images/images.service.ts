@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { ImageDto } from './images.dto';
+import { ImageDto, LinkImage } from './images.dto';
 
 @Injectable()
 export class ImagesService {
@@ -13,7 +13,14 @@ export class ImagesService {
   }
 
   async create(body: ImageDto) {
-    await this.prismaService.image.create({
+    return await this.prismaService.image.create({
+      data: body,
+    });
+  }
+
+  async update(id: string, body: LinkImage) {
+    await this.prismaService.image.update({
+      where: { id },
       data: body,
     });
   }

@@ -7,18 +7,15 @@ import {
   Param,
   Post,
   Put,
-  UploadedFile,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ThemesService } from './themes.service';
-import type { ThemeDto } from './themes.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { deleteFile, storage } from 'src/file-utils';
+import type { ThemeDto, ThemeService } from './themes.dto';
+import { deleteFile } from 'src/file-utils';
 import { ImagesService } from 'src/images/images.service';
+import { LinkImage } from 'src/images/images.dto';
 
-@UseGuards(JwtAuthGuard)
 @Controller('themes')
 export class ThemesController {
   constructor(
@@ -26,13 +23,14 @@ export class ThemesController {
     private readonly imagesService: ImagesService,
   ) {}
 
-  @Get('listes')
+  @Get('liste')
   async getAllThemes() {
     const result = await this.themesService.findMany();
 
     return { ok: true, themes: result };
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async getThemeById(
     @Param('id')
@@ -43,81 +41,73 @@ export class ThemesController {
     return { ok: true, theme: result };
   }
 
-  @Post('create')
-  @UseInterceptors(
-    FileInterceptor('image', {
-      limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB limit
-      storage: storage,
-    }),
-  )
+  @UseGuards(JwtAuthGuard)
+  @Post('creation')
   public async createTheme(
     @Body()
     body: ThemeDto,
-    @UploadedFile() image: Express.Multer.File,
   ) {
-    const result = await this.themesService.create(body);
+    const { nom, imageId } = body;
+    const serviceBody: ThemeService = { nom };
 
-    await this.imagesService.create({
-      themeId: result.id,
-      nom: image.filename,
-    });
+    const result = await this.themesService.create(serviceBody);
+
+    if (imageId) {
+      const imageBody: LinkImage = {
+        themeId: result.id,
+      };
+
+      await this.imagesService.update(imageId, imageBody);
+    }
 
     return { ok: true, theme: result };
   }
 
-  @Put('update/:id')
+  @UseGuards(JwtAuthGuard)
+  @Put('modification/:id')
   async updateTheme(
     @Param('id')
     id: string,
     @Body()
     body: ThemeDto,
   ) {
-    const result = await this.themesService.update(id, body);
+    const { nom, imageId } = body;
+    const serviceBody: ThemeService = { nom };
 
-    return { ok: true, theme: result };
-  }
+    const result = await this.themesService.update(id, serviceBody);
 
-  @Put('update/:id/image/:imageId')
-  @UseInterceptors(
-    FileInterceptor('image', {
-      limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB limit
-      storage: storage,
-    }),
-  )
-  async updateImageTheme(
-    @Param('id')
-    id: string,
-    @Param('imageId')
-    imageId: string,
-    @UploadedFile() image: Express.Multer.File,
-  ) {
-    const imageASupprimer = await this.imagesService.findOne(imageId);
+    const imageIdASupprimer = result.image?.id;
+    if (imageId && imageIdASupprimer) {
+      const imageASupprimer =
+        await this.imagesService.findOne(imageIdASupprimer);
 
-    if (!imageASupprimer) {
-      return { ok: false, message: 'Image non trouvée' };
+      if (!imageASupprimer) {
+        return { ok: false, message: 'Image non trouvée' };
+      }
+
+      try {
+        await deleteFile(imageASupprimer.nom);
+      } catch {
+        throw new InternalServerErrorException(
+          'Erreur lors de la suppression du fichier',
+        );
+      }
+
+      const imageBody: LinkImage = {
+        themeId: result.id,
+      };
+
+      await this.imagesService.delete(imageIdASupprimer);
+      await this.imagesService.update(imageId, imageBody);
     }
 
-    try {
-      await deleteFile(imageASupprimer.nom);
-    } catch {
-      throw new InternalServerErrorException(
-        'Erreur lors de la suppression du fichier',
-      );
-    }
+    const resultatFinal = await this.themesService.findOne(id);
 
-    await this.imagesService.delete(imageId);
-
-    await this.imagesService.create({
-      themeId: id,
-      nom: image.filename,
-    });
-
-    const result = await this.themesService.findOne(id);
-
-    return { ok: true, theme: result };
+    return { ok: true, theme: resultatFinal };
   }
 
-  @Delete('delete/:id')
+  @UseGuards(JwtAuthGuard)
+  @Delete('suppression/:id')
   async deleteTheme(
     @Param('id')
     id: string,

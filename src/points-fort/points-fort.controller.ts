@@ -12,12 +12,11 @@ import { PointsFortService } from './points-fort.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import type { PointsFortDto } from './points-fort.dto';
 
-@UseGuards(JwtAuthGuard)
 @Controller('points-fort')
 export class PointsFortController {
   constructor(private readonly pointsFortService: PointsFortService) {}
 
-  @Get('listes')
+  @Get('liste')
   async getAllPointsFort() {
     const result = await this.pointsFortService.findMany();
 
@@ -25,6 +24,7 @@ export class PointsFortController {
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   async getPointFortById(
     @Param('id')
     id: string,
@@ -34,7 +34,8 @@ export class PointsFortController {
     return { ok: true, pointFort: result };
   }
 
-  @Post('create')
+  @Post('creation')
+  @UseGuards(JwtAuthGuard)
   public async createPointFort(
     @Body()
     body: PointsFortDto,
@@ -44,7 +45,8 @@ export class PointsFortController {
     return { ok: true, pointFort: result };
   }
 
-  @Put('update/:id')
+  @Put('modification/:id')
+  @UseGuards(JwtAuthGuard)
   async updatePointFort(
     @Param('id')
     id: string,
@@ -56,7 +58,8 @@ export class PointsFortController {
     return { ok: true, pointFort: result };
   }
 
-  @Delete('delete/:id')
+  @Delete('suppression/:id')
+  @UseGuards(JwtAuthGuard)
   async deletePointFort(
     @Param('id')
     id: string,

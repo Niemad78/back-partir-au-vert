@@ -1,15 +1,15 @@
-export type ActiviteFormData = {
+export type ActiviteDto = {
   nom: string;
   description: string;
-  prix: string;
+  prix: number;
   ville: string;
-  departement: string;
-  nbPersonnesMax: string;
+  departement: number;
+  nbPersonnesMax: number;
   themeId: string;
-  images: Array<Express.Multer.File>;
+  imageIds?: string[];
 };
 
-export type ActiviteDto = {
+export type ActiviteService = {
   nom: string;
   description: string;
   prix: number;
