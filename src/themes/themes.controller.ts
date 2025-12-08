@@ -77,7 +77,7 @@ export class ThemesController {
     const result = await this.themesService.update(id, serviceBody);
 
     const imageIdASupprimer = result.image?.id;
-    if (imageId && imageIdASupprimer) {
+    if (imageId && imageIdASupprimer && imageId !== imageIdASupprimer) {
       const imageASupprimer =
         await this.imagesService.findOne(imageIdASupprimer);
 
