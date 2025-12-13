@@ -11,10 +11,13 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ActivitesService } from './activites.service';
-import type { ActiviteDto, ActiviteService } from './activites.dto';
+import type {
+  ActiviteAjoutImage,
+  ActiviteCreation,
+  ActiviteModification,
+} from './activites.dto';
 import { deleteFile } from 'src/file-utils';
 import { ImagesService } from 'src/images/images.service';
-import { LinkImage } from 'src/images/images.dto';
 
 @Controller('activites')
 export class ActivitesController {
@@ -44,39 +47,9 @@ export class ActivitesController {
   @Post('creation')
   public async createActivite(
     @Body()
-    body: ActiviteDto,
+    body: ActiviteCreation,
   ) {
-    const {
-      nom,
-      description,
-      prix,
-      ville,
-      departement,
-      nbPersonnesMax,
-      themeId,
-      imageIds,
-    } = body;
-    const serviceBody: ActiviteService = {
-      nom,
-      description,
-      prix,
-      ville,
-      departement,
-      nbPersonnesMax,
-      themeId,
-    };
-
-    const result = await this.activitesService.create(serviceBody);
-
-    if (imageIds && imageIds.length > 0) {
-      for (const imageId of imageIds) {
-        const imageBody: LinkImage = {
-          activiteId: result.id,
-        };
-
-        await this.imagesService.update(imageId, imageBody);
-      }
-    }
+    const result = await this.activitesService.create(body);
 
     return { ok: true, activite: result };
   }
@@ -87,9 +60,22 @@ export class ActivitesController {
     @Param('id')
     id: string,
     @Body()
-    body: ActiviteDto,
+    body: ActiviteModification,
   ) {
     const result = await this.activitesService.update(id, body);
+
+    return { ok: true, activite: result };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('modification-images/:id')
+  async updateImageActivite(
+    @Param('id')
+    id: string,
+    @Body()
+    body: ActiviteAjoutImage,
+  ) {
+    const result = await this.activitesService.updateImages(id, body);
 
     return { ok: true, activite: result };
   }
