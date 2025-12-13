@@ -1,4 +1,7 @@
-export type ActiviteDto = {
+import { ImageOutput } from 'src/images/images.dto';
+import { ThemeOutput } from 'src/themes/themes.dto';
+
+export type ActiviteCreation = {
   nom: string;
   description: string;
   prix: number;
@@ -6,20 +9,22 @@ export type ActiviteDto = {
   departement: number;
   nbPersonnesMax: number;
   themeId: string;
+};
+
+export type ActiviteModification = ActiviteCreation;
+
+export type ActiviteAjoutImage = {
   imageIds?: string[];
 };
 
-export type ActiviteService = {
+export type ActiviteOutput = {
+  id: string;
   nom: string;
   description: string;
   prix: number;
   ville: string;
   departement: number;
   nbPersonnesMax: number;
-  themeId: string;
-};
-
-export type ActiviteOutput = ActiviteDto & {
-  id: string;
-  images?: { id: string; nom: string }[];
+  theme: ThemeOutput;
+  images?: ImageOutput[];
 };
