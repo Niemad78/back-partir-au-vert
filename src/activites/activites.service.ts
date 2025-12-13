@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { ActiviteDto, ActiviteOutput, ActiviteService } from './activites.dto';
+import {
+  ActiviteAjoutImage,
+  ActiviteCreation,
+  ActiviteOutput,
+} from './activites.dto';
 
 @Injectable()
 export class ActivitesService {
@@ -19,16 +23,34 @@ export class ActivitesService {
     });
   }
 
-  async create(body: ActiviteService): Promise<ActiviteOutput> {
+  async create(body: ActiviteCreation): Promise<ActiviteOutput> {
     return await this.prismaService.activite.create({
       data: body,
+      include: { theme: true, pointFort: true, images: true },
     });
   }
 
-  async update(id: string, body: ActiviteDto): Promise<ActiviteOutput> {
+  async update(id: string, body: ActiviteCreation): Promise<ActiviteOutput> {
     return this.prismaService.activite.update({
       where: { id },
       data: body,
+      include: { theme: true, pointFort: true, images: true },
+    });
+  }
+
+  async updateImages(
+    id: string,
+    body: ActiviteAjoutImage,
+  ): Promise<ActiviteOutput> {
+    const { imageIds } = body;
+    return this.prismaService.activite.update({
+      where: { id },
+      data: {
+        images: {
+          set: imageIds?.map((imageId) => ({ id: imageId })),
+        },
+      },
+      include: { theme: true, pointFort: true, images: true },
     });
   }
 
