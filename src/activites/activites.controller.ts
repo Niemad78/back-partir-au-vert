@@ -18,6 +18,7 @@ import type {
 } from './activites.dto';
 import { deleteFile } from 'src/file-utils';
 import { ImagesService } from 'src/images/images.service';
+import { LinkImage } from 'src/images/images.dto';
 
 @Controller('activites')
 export class ActivitesController {
@@ -68,16 +69,26 @@ export class ActivitesController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Put('modification-images/:id')
+  @Post('ajout-images/:id')
   async updateImageActivite(
     @Param('id')
     id: string,
     @Body()
     body: ActiviteAjoutImage,
   ) {
-    const result = await this.activitesService.updateImages(id, body);
+    const { imageIds } = body;
 
-    return { ok: true, activite: result };
+    if (!imageIds || imageIds.length === 0) {
+      return { ok: false, message: 'Aucune image à ajouter' };
+    }
+
+    const activiteId: LinkImage = { activiteId: id };
+
+    for (const imageId of imageIds) {
+      await this.imagesService.update(imageId, activiteId);
+    }
+
+    return { ok: true, message: 'Images ajoutées' };
   }
 
   @UseGuards(JwtAuthGuard)

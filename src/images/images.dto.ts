@@ -1,5 +1,7 @@
 export type ImageDto = {
   nom: string;
+  themeId?: string;
+  activiteId?: string;
 };
 
 export type LinkImage = {
