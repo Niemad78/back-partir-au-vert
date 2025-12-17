@@ -72,3 +72,11 @@ model Image {
   themeId    String?   @unique
   theme      Theme?    @relation(fields: [themeId], references: [id])
 }
+
+model Faq {
+  id        String   @id @default(cuid())
+  question  String
+  reponse   String   @db.LongText
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
