@@ -9,6 +9,7 @@ import { PointsFortModule } from './points-fort/points-fort.module';
 import { ImagesModule } from './images/images.module';
 import { join } from 'path';
 import { LoggingMiddleware } from './logging.middleware';
+import { FaqModule } from './faq/faq.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { LoggingMiddleware } from './logging.middleware';
     ThemesModule,
     PointsFortModule,
     ImagesModule,
+    FaqModule,
   ],
   controllers: [],
   providers: [],
