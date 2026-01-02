@@ -1,5 +1,5 @@
 # Utiliser une image Node.js comme base
-FROM node:22-alpine
+FROM node:20-alpine
 
 ARG DATABASE_URL
 
@@ -17,6 +17,9 @@ COPY prisma ./prisma/
 # Installer les dépendances du repo
 RUN pnpm install
 
+# Générer Prisma Client
+RUN pnpm prisma generate
+
 # Copier le reste des fichiers de l'application backend
 COPY . .
 
@@ -27,4 +30,4 @@ RUN pnpm run build
 EXPOSE 8000
 
 # Démarrer l'application
-CMD ["sh", "-c", "npx prisma migrate deploy && pnpm start"]
+CMD ["sh", "-c", "pnpm prisma migrate deploy && pnpm start"]
