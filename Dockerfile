@@ -8,13 +8,13 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 # Définir le répertoire de travail
 WORKDIR /usr/src/app
 
-# Copier les fichiers package.json et package-lock.json du monorepo
+# Copier les fichiers package.json et package-lock.json du repo
 COPY package*.json ./
 COPY pnpm-lock.yaml ./
 COPY pnpm-workspace.yaml ./
 COPY prisma ./prisma/
 
-# Installer les dépendances du monorepo
+# Installer les dépendances du repo
 RUN pnpm install
 
 # Copier le reste des fichiers de l'application backend
