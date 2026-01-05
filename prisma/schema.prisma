@@ -70,6 +70,8 @@ model Image {
   activite   Activite? @relation(fields: [activiteId], references: [id])
   themeId    String?   @unique
   theme      Theme?    @relation(fields: [themeId], references: [id])
+  publicationId String?
+  publication   Publication? @relation(fields: [publicationId], references: [id])
 }
 
 model Faq {
@@ -87,6 +89,7 @@ model Publication {
   type      TypePublication @default(AUTRE)
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt
+  images    Image[]
 }
 
 enum TypePublication {
