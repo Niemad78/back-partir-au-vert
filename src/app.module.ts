@@ -10,6 +10,7 @@ import { ImagesModule } from './images/images.module';
 import { join } from 'path';
 import { LoggingMiddleware } from './logging.middleware';
 import { FaqModule } from './faq/faq.module';
+import { PublicationsModule } from './publications/publications.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { FaqModule } from './faq/faq.module';
     PointsFortModule,
     ImagesModule,
     FaqModule,
+    PublicationsModule,
   ],
   controllers: [],
   providers: [],

@@ -70,6 +70,8 @@ model Image {
   activite   Activite? @relation(fields: [activiteId], references: [id])
   themeId    String?   @unique
   theme      Theme?    @relation(fields: [themeId], references: [id])
+  publicationId String?
+  publication   Publication? @relation(fields: [publicationId], references: [id])
 }
 
 model Faq {
@@ -78,4 +80,20 @@ model Faq {
   reponse   String   @db.LongText
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Publication {
+  id        String          @id @default(cuid())
+  titre     String
+  contenu   String          @db.LongText
+  type      TypePublication @default(autre)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  images    Image[]
+}
+
+enum TypePublication {
+  histoire
+  seminaire
+  autre
 }
