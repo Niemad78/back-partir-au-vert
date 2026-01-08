@@ -11,6 +11,12 @@ import { TypePublication } from '@prisma/client';
 export class PublicationsService {
   constructor(private readonly prismaService: PrismaService) {}
 
+  async findMany(): Promise<PublicationOutput[]> {
+    return this.prismaService.publication.findMany({
+      include: { images: true },
+    });
+  }
+
   async findManyByType(type: TypePublication): Promise<PublicationOutput[]> {
     return this.prismaService.publication.findMany({
       where: { type },
