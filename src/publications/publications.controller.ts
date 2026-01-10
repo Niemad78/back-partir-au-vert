@@ -28,6 +28,13 @@ export class PublicationsController {
     private readonly imagesService: ImagesService,
   ) {}
 
+  @Get('liste')
+  async getAllPublications() {
+    const result = await this.publicationService.findMany();
+
+    return { ok: true, publications: result };
+  }
+
   @Get('liste/:type')
   async getPublications(
     @Param('type')
