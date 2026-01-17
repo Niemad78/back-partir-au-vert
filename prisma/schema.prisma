@@ -72,6 +72,8 @@ model Image {
   theme      Theme?    @relation(fields: [themeId], references: [id])
   publicationId String?
   publication   Publication? @relation(fields: [publicationId], references: [id])
+  partenaireId String? @unique
+  partenaire   Partenaire? @relation(fields: [partenaireId], references: [id])
 }
 
 model Faq {
@@ -101,7 +103,7 @@ enum TypePublication {
 model Partenaire {
   id        String   @id @default(cuid())
   nom       String
-  logo      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  image     Image?
 }

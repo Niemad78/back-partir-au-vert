@@ -7,7 +7,16 @@ export class PartenairesService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async findMany(): Promise<PartenaireOutput[]> {
-    return this.prismaService.partenaire.findMany();
+    return this.prismaService.partenaire.findMany({
+      include: { image: true },
+    });
+  }
+
+  async findOne(id: string): Promise<PartenaireOutput | null> {
+    return this.prismaService.partenaire.findUnique({
+      where: { id },
+      include: { image: true },
+    });
   }
 
   async create(body: PartenaireCreation): Promise<PartenaireOutput> {
