@@ -3,12 +3,14 @@ export type ImageDto = {
   themeId?: string;
   activiteId?: string;
   publicationId?: string;
+  partenaireId?: string;
 };
 
 export type LinkImage = {
   activiteId?: string;
   themeId?: string;
   publicationId?: string;
+  partenaireId?: string;
 };
 
 export type ImageOutput = {

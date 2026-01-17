@@ -11,6 +11,7 @@ import { join } from 'path';
 import { LoggingMiddleware } from './logging.middleware';
 import { FaqModule } from './faq/faq.module';
 import { PublicationsModule } from './publications/publications.module';
+import { PartenairesModule } from './partenaires/partenaires.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { PublicationsModule } from './publications/publications.module';
     ImagesModule,
     FaqModule,
     PublicationsModule,
+    PartenairesModule,
   ],
   controllers: [],
   providers: [],
