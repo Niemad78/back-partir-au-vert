@@ -62,18 +62,20 @@ model PointFort {
 }
 
 model Image {
-  id         String    @id @default(cuid())
-  nom        String
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  activiteId String?
-  activite   Activite? @relation(fields: [activiteId], references: [id])
-  themeId    String?   @unique
-  theme      Theme?    @relation(fields: [themeId], references: [id])
+  id            String       @id @default(cuid())
+  nom           String
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  activiteId    String?
+  activite      Activite?    @relation(fields: [activiteId], references: [id])
+  themeId       String?      @unique
+  theme         Theme?       @relation(fields: [themeId], references: [id])
   publicationId String?
   publication   Publication? @relation(fields: [publicationId], references: [id])
-  partenaireId String? @unique
-  partenaire   Partenaire? @relation(fields: [partenaireId], references: [id])
+  partenaireId  String?      @unique
+  partenaire    Partenaire?  @relation(fields: [partenaireId], references: [id])
+  equipeId      String?      @unique
+  equipe        Equipe?      @relation(fields: [equipeId], references: [id])
 }
 
 model Faq {
@@ -106,4 +108,11 @@ model Partenaire {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   image     Image?
+}
+
+model Equipe {
+  id          String @id @default(cuid())
+  nom         String
+  description String @db.LongText
+  image       Image?
 }
