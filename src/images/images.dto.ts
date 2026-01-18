@@ -4,6 +4,7 @@ export type ImageDto = {
   activiteId?: string;
   publicationId?: string;
   partenaireId?: string;
+  equipeId?: string;
 };
 
 export type LinkImage = {
@@ -11,6 +12,7 @@ export type LinkImage = {
   themeId?: string;
   publicationId?: string;
   partenaireId?: string;
+  equipeId?: string;
 };
 
 export type ImageOutput = {
