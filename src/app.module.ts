@@ -13,6 +13,7 @@ import { FaqModule } from './faq/faq.module';
 import { PublicationsModule } from './publications/publications.module';
 import { PartenairesModule } from './partenaires/partenaires.module';
 import { EquipesModule } from './equipes/equipes.module';
+import { BlogModule } from './blog/blog.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { EquipesModule } from './equipes/equipes.module';
     PublicationsModule,
     PartenairesModule,
     EquipesModule,
+    BlogModule,
   ],
   controllers: [],
   providers: [],
