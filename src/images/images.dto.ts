@@ -5,6 +5,7 @@ export type ImageDto = {
   publicationId?: string;
   partenaireId?: string;
   equipeId?: string;
+  articleId?: string;
 };
 
 export type LinkImage = {
@@ -13,6 +14,7 @@ export type LinkImage = {
   publicationId?: string;
   partenaireId?: string;
   equipeId?: string;
+  articleId?: string;
 };
 
 export type ImageOutput = {
