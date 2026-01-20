@@ -19,12 +19,15 @@ enum Role {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
+  id        String    @id @default(cuid())
+  email     String    @unique
   password  String
-  role      Role     @default(ADMIN)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  nom       String?
+  prenom    String?
+  role      Role      @default(ADMIN)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  articles  Article[]
 }
 
 model Activite {
@@ -76,6 +79,8 @@ model Image {
   partenaire    Partenaire?  @relation(fields: [partenaireId], references: [id])
   equipeId      String?      @unique
   equipe        Equipe?      @relation(fields: [equipeId], references: [id])
+  articleId     String?
+  article       Article?     @relation(fields: [articleId], references: [id])
 }
 
 model Faq {
@@ -115,4 +120,15 @@ model Equipe {
   nom         String
   description String @db.LongText
   image       Image?
+}
+
+model Article {
+  id        String   @id @default(cuid())
+  titre     String
+  contenu   String   @db.LongText
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  images         Image[]
 }

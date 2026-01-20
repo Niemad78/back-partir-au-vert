@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { LoginDto } from 'src/auth/auth.dto';
+import type { UserCreation } from 'src/auth/auth.dto';
 import { User } from './get-user.decorator';
 import { Role } from 'src/role.enum';
 import { Roles } from 'src/auth/role.decorator';
@@ -25,7 +25,7 @@ export class UsersController {
   public async modify(
     @User('userId') userId: string,
     @Body()
-    body: LoginDto,
+    body: UserCreation,
   ) {
     await this.usersService.changeInformation(body, userId);
 
@@ -49,7 +49,7 @@ export class UsersController {
   @Roles(Role.SUPER_ADMIN)
   public async newUser(
     @Body()
-    body: LoginDto,
+    body: UserCreation,
   ) {
     await this.usersService.createNewUser(body);
 
