@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { LoginDto } from 'src/auth/auth.dto';
+import { LoginDto, UserCreation } from 'src/auth/auth.dto';
 import { PrismaService } from 'src/prisma.service';
 import { UserList } from './types';
 
@@ -9,7 +9,7 @@ export class UsersService {
   constructor(private readonly prismaService: PrismaService) {}
 
   public async changeInformation(
-    body: LoginDto,
+    body: UserCreation,
     userId: string,
   ): Promise<void> {
     const utilisateurExistant = await this.prismaService.user.findUnique({
@@ -35,13 +35,15 @@ export class UsersService {
       data: {
         email: body.email,
         password: hashedPassword,
+        nom: body.nom,
+        prenom: body.prenom,
       },
     });
 
     return;
   }
 
-  public async createNewUser(body: LoginDto): Promise<void> {
+  public async createNewUser(body: UserCreation): Promise<void> {
     const emailExistant = await this.prismaService.user.findUnique({
       where: { email: body.email },
     });
@@ -56,6 +58,8 @@ export class UsersService {
       data: {
         email: body.email,
         password: hashedPassword,
+        nom: body.nom,
+        prenom: body.prenom,
       },
     });
 
@@ -67,6 +71,8 @@ export class UsersService {
       select: {
         id: true,
         email: true,
+        nom: true,
+        prenom: true,
       },
     });
   }
