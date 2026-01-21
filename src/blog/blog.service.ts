@@ -12,6 +12,7 @@ export class BlogService {
         images: true,
         user: {
           select: {
+            id: true,
             nom: true,
             prenom: true,
           },
@@ -27,6 +28,7 @@ export class BlogService {
         images: true,
         user: {
           select: {
+            id: true,
             nom: true,
             prenom: true,
           },
@@ -42,6 +44,7 @@ export class BlogService {
         images: true,
         user: {
           select: {
+            id: true,
             nom: true,
             prenom: true,
           },
@@ -57,6 +60,7 @@ export class BlogService {
         images: true,
         user: {
           select: {
+            id: true,
             nom: true,
             prenom: true,
           },
