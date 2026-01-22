@@ -1,12 +1,37 @@
-import { IsNotEmpty, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
 
 export class UserDto {
-  @IsNotEmpty({ message: 'Email requis' })
+  @IsEmail()
+  @IsNotEmpty()
   email: string;
 
-  @IsNotEmpty({ message: 'Mot de passe requis' })
-  @MinLength(12, {
-    message: 'Le mot de passe doit contenir au moins 12 caractères',
-  })
+  @IsNotEmpty()
+  @MinLength(8)
   password: string;
+
+  @IsNotEmpty()
+  nom: string;
+
+  @IsNotEmpty()
+  prenom: string;
+}
+
+export class EmailDto {
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+}
+
+export class PasswordDto {
+  @IsNotEmpty()
+  @MinLength(8)
+  password: string;
+}
+
+export class InfoDto {
+  @IsNotEmpty()
+  nom: string;
+
+  @IsNotEmpty()
+  prenom: string;
 }

@@ -1,5 +1,5 @@
 import { ImageOutput } from 'src/images/images.dto';
-import { User } from 'src/users/types';
+import { UtilisateurOutput } from 'src/users/types';
 
 export type ArticleCreation = {
   titre: string;
@@ -18,6 +18,6 @@ export type ArticleOutput = {
   titre: string;
   contenu: string;
   createdAt: Date;
-  utilisateur?: User;
+  utilisateur?: UtilisateurOutput;
   images?: ImageOutput[];
 };

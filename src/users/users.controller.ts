@@ -10,32 +10,35 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import type { UserCreation } from 'src/auth/auth.dto';
 import { User } from './get-user.decorator';
 import { Role } from 'src/role.enum';
 import { Roles } from 'src/auth/role.decorator';
 import { RolesGuard } from 'src/auth/role.guard';
+import { EmailDto, InfoDto, PasswordDto, UserDto } from './users.dto';
 
 @Controller('utilisateurs')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(JwtAuthGuard)
-  @Put('me/modification')
-  public async modify(
-    @User('userId') userId: string,
-    @Body()
-    body: UserCreation,
-  ) {
-    await this.usersService.changeInformation(body, userId);
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get('liste')
+  @Roles(Role.SUPER_ADMIN)
+  public async getAllUtilisateurs() {
+    const users = await this.usersService.findMany();
+    return { ok: true, users };
+  }
 
-    return { ok: true, message: 'Informations modifiées avec succès' };
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  public async getUtilisateurById(@User('userId') userId: string) {
+    const user = await this.usersService.findOne(userId);
+    return { ok: true, user };
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('me/verification')
   public me() {
-    return { ok: true, message: 'Connexion réussie 🎉' };
+    return { ok: true, message: 'Vous êtes connecté' };
   }
 
   @UseGuards(JwtAuthGuard)
@@ -49,19 +52,47 @@ export class UsersController {
   @Roles(Role.SUPER_ADMIN)
   public async newUser(
     @Body()
-    body: UserCreation,
+    body: UserDto,
   ) {
-    await this.usersService.createNewUser(body);
+    await this.usersService.create(body);
 
     return { ok: true, message: 'Utilisateur créé avec succès' };
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Get('liste')
-  @Roles(Role.SUPER_ADMIN)
-  public async listUsers() {
-    const users = await this.usersService.findAllUSers();
-    return { ok: true, users };
+  @UseGuards(JwtAuthGuard)
+  @Put('me/email')
+  public async updateEmail(
+    @User('userId') userId: string,
+    @Body()
+    body: EmailDto,
+  ) {
+    const result = await this.usersService.updateEmail(body, userId);
+
+    return { ok: true, utilisateur: result };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('me/password')
+  public async updatePassword(
+    @User('userId') userId: string,
+    @Body()
+    body: PasswordDto,
+  ) {
+    const result = await this.usersService.updatePassword(body, userId);
+
+    return { ok: true, utilisateur: result };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('me/infos')
+  public async updateInfo(
+    @User('userId') userId: string,
+    @Body()
+    body: InfoDto,
+  ) {
+    const result = await this.usersService.updateInfo(body, userId);
+
+    return { ok: true, utilisateur: result };
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)

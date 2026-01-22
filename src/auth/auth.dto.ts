@@ -1,12 +1,5 @@
 import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
 
-export type UserCreation = {
-  email: string;
-  password: string;
-  nom?: string;
-  prenom?: string;
-};
-
 export class LoginDto {
   @IsNotEmpty()
   @IsEmail()

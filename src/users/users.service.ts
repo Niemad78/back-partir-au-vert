@@ -1,49 +1,38 @@
 import bcrypt from 'bcrypt';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { LoginDto, UserCreation } from 'src/auth/auth.dto';
+import { LoginDto } from 'src/auth/auth.dto';
 import { PrismaService } from 'src/prisma.service';
-import { UserList } from './types';
+import { UtilisateurOutput } from './types';
+import { EmailDto, InfoDto, PasswordDto, UserDto } from './users.dto';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  public async changeInformation(
-    body: UserCreation,
-    userId: string,
-  ): Promise<void> {
-    const utilisateurExistant = await this.prismaService.user.findUnique({
-      where: { id: userId },
-    });
-
-    const emailExistant = await this.prismaService.user.findUnique({
-      where: { email: body.email },
-    });
-
-    if (emailExistant?.email === body.email && emailExistant.id !== userId) {
-      throw new UnauthorizedException('Cet email est déjà utilisé');
-    }
-
-    if (!utilisateurExistant) {
-      throw new UnauthorizedException('Utilisateur inconnu');
-    }
-
-    const hashedPassword = await bcrypt.hash(body.password, 10);
-
-    await this.prismaService.user.update({
-      where: { id: userId },
-      data: {
-        email: body.email,
-        password: hashedPassword,
-        nom: body.nom,
-        prenom: body.prenom,
+  public async findMany(): Promise<UtilisateurOutput[]> {
+    return await this.prismaService.user.findMany({
+      select: {
+        id: true,
+        email: true,
+        nom: true,
+        prenom: true,
       },
     });
-
-    return;
   }
 
-  public async createNewUser(body: UserCreation): Promise<void> {
+  async findOne(id: string): Promise<UtilisateurOutput | null> {
+    return this.prismaService.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        email: true,
+        nom: true,
+        prenom: true,
+      },
+    });
+  }
+
+  public async create(body: UserDto): Promise<void> {
     const emailExistant = await this.prismaService.user.findUnique({
       where: { email: body.email },
     });
@@ -66,8 +55,86 @@ export class UsersService {
     return;
   }
 
-  public async findAllUSers(): Promise<UserList[]> {
-    return await this.prismaService.user.findMany({
+  public async updateEmail(
+    body: EmailDto,
+    id: string,
+  ): Promise<UtilisateurOutput> {
+    const utilisateurExistant = await this.prismaService.user.findUnique({
+      where: { id },
+    });
+
+    if (!utilisateurExistant) {
+      throw new UnauthorizedException('Utilisateur inconnu');
+    }
+
+    const emailExistant = await this.prismaService.user.findUnique({
+      where: { email: body.email },
+    });
+
+    if (emailExistant) {
+      throw new UnauthorizedException('Cet email est déjà utilisé');
+    }
+
+    return this.prismaService.user.update({
+      where: { id },
+      data: {
+        email: body.email,
+      },
+      select: {
+        id: true,
+        email: true,
+        nom: true,
+        prenom: true,
+      },
+    });
+  }
+
+  public async updatePassword(
+    body: PasswordDto,
+    id: string,
+  ): Promise<UtilisateurOutput> {
+    const utilisateurExistant = await this.prismaService.user.findUnique({
+      where: { id },
+    });
+
+    if (!utilisateurExistant) {
+      throw new UnauthorizedException('Utilisateur inconnu');
+    }
+
+    const hashedPassword = await bcrypt.hash(body.password, 10);
+
+    return await this.prismaService.user.update({
+      where: { id },
+      data: {
+        password: hashedPassword,
+      },
+      select: {
+        id: true,
+        email: true,
+        nom: true,
+        prenom: true,
+      },
+    });
+  }
+
+  public async updateInfo(
+    body: InfoDto,
+    id: string,
+  ): Promise<UtilisateurOutput> {
+    const utilisateurExistant = await this.prismaService.user.findUnique({
+      where: { id },
+    });
+
+    if (!utilisateurExistant) {
+      throw new UnauthorizedException('Utilisateur inconnu');
+    }
+
+    return await this.prismaService.user.update({
+      where: { id },
+      data: {
+        nom: body.nom,
+        prenom: body.prenom,
+      },
       select: {
         id: true,
         email: true,
