@@ -1,10 +1,6 @@
-export type User = {
+export type UtilisateurOutput = {
   id: string;
   email: string;
-  nom?: string;
-  prenom?: string;
-};
-
-export type UserList = {
-  email: string;
+  nom: string | null;
+  prenom: string | null;
 };
