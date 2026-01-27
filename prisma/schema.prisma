@@ -38,12 +38,19 @@ model Activite {
   ville          String
   departement    Int
   nbPersonnesMax Int
+  duree          Duree?
   themeId        String
   theme          Theme       @relation(fields: [themeId], references: [id], onDelete: Cascade)
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
   pointFort      PointFort[]
   images         Image[]
+}
+
+enum Duree {
+  journee
+  matinee
+  apres_midi
 }
 
 model Theme {
