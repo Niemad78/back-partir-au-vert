@@ -1,3 +1,4 @@
+import { Duree } from '@prisma/client';
 import { ImageOutput } from 'src/images/images.dto';
 import { ThemeOutput } from 'src/themes/themes.dto';
 
@@ -9,6 +10,7 @@ export type ActiviteCreation = {
   departement: number;
   nbPersonnesMax: number;
   themeId: string;
+  duree: Duree | null;
 };
 
 export type ActiviteModification = ActiviteCreation;
@@ -27,4 +29,5 @@ export type ActiviteOutput = {
   nbPersonnesMax: number;
   theme: ThemeOutput;
   images?: ImageOutput[];
+  duree: Duree | null;
 };
