@@ -26,6 +26,7 @@ export class ActivitesService {
       longitude:
         activite.longitude !== null ? Number(activite.longitude) : null,
       adresse: activite.adresse,
+      accessibilite: activite.accessibilite,
     };
   }
 

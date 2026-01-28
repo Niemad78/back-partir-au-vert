@@ -1,4 +1,4 @@
-import { Duree, Prisma } from '@prisma/client';
+import type { Duree, Prisma } from '@prisma/client';
 import { ImageOutput } from 'src/images/images.dto';
 import { ThemeOutput } from 'src/themes/themes.dto';
 
@@ -14,6 +14,7 @@ export type ActiviteCreation = {
   latitude: number | null;
   longitude: number | null;
   adresse: string | null;
+  accessibilite: string | null;
 };
 
 export type ActiviteModification = ActiviteCreation;
@@ -36,6 +37,7 @@ export type ActiviteOutput = {
   latitude: number | null;
   longitude: number | null;
   adresse: string | null;
+  accessibilite: string | null;
 };
 
 export type ActivitePrismaPayload = Prisma.ActiviteGetPayload<{
