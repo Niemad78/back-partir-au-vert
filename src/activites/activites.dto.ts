@@ -1,4 +1,4 @@
-import { Duree } from '@prisma/client';
+import { Duree, Prisma } from '@prisma/client';
 import { ImageOutput } from 'src/images/images.dto';
 import { ThemeOutput } from 'src/themes/themes.dto';
 
@@ -9,7 +9,7 @@ export type ActiviteCreation = {
   ville: string;
   departement: number;
   nbPersonnesMax: number;
-  themeId: string;
+  themeIds: string[];
   duree: Duree | null;
 };
 
@@ -27,7 +27,15 @@ export type ActiviteOutput = {
   ville: string;
   departement: number;
   nbPersonnesMax: number;
-  theme: ThemeOutput;
+  themes: ThemeOutput[];
   images?: ImageOutput[];
   duree: Duree | null;
 };
+
+export type ActivitePrismaPayload = Prisma.ActiviteGetPayload<{
+  include: {
+    themeOnActivites: { include: { theme: true } };
+    pointFort: true;
+    images: true;
+  };
+}>;
