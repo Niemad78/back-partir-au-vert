@@ -11,6 +11,9 @@ export type ActiviteCreation = {
   nbPersonnesMax: number;
   themeIds: string[];
   duree: Duree | null;
+  latitude: number | null;
+  longitude: number | null;
+  adresse: string | null;
 };
 
 export type ActiviteModification = ActiviteCreation;
@@ -30,6 +33,9 @@ export type ActiviteOutput = {
   themes: ThemeOutput[];
   images?: ImageOutput[];
   duree: Duree | null;
+  latitude: number | null;
+  longitude: number | null;
+  adresse: string | null;
 };
 
 export type ActivitePrismaPayload = Prisma.ActiviteGetPayload<{

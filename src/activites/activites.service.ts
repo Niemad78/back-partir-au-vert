@@ -22,6 +22,10 @@ export class ActivitesService {
       duree: activite.duree,
       themes: activite.themeOnActivites.map((x) => x.theme),
       images: activite.images,
+      latitude: activite.latitude !== null ? Number(activite.latitude) : null,
+      longitude:
+        activite.longitude !== null ? Number(activite.longitude) : null,
+      adresse: activite.adresse,
     };
   }
 
