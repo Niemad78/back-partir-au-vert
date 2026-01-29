@@ -123,6 +123,7 @@ model Publication {
 enum TypePublication {
   histoire
   seminaire
+  mentions_legales
   autre
 }
 
