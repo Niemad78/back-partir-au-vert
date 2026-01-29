@@ -39,6 +39,10 @@ model Activite {
   departement      Int
   nbPersonnesMax   Int
   duree            Duree?
+  latitude         Decimal?          @db.Decimal(9, 6)
+  longitude        Decimal?          @db.Decimal(9, 6)
+  adresse          String?
+  accessibilite    String?           @db.LongText
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
   pointFort        PointFort[]
@@ -66,6 +70,7 @@ model ThemeOnActivite {
   activite   Activite @relation(fields: [activiteId], references: [id], onDelete: Cascade)
   themeId    String
   theme      Theme    @relation(fields: [themeId], references: [id], onDelete: Cascade)
+
   @@id([activiteId, themeId])
 }
 
