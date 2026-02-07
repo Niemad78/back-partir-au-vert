@@ -124,6 +124,7 @@ enum TypePublication {
   histoire
   seminaire
   mentions_legales
+  cgv
   autre
 }
 
