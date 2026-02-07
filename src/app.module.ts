@@ -14,6 +14,7 @@ import { PublicationsModule } from './publications/publications.module';
 import { PartenairesModule } from './partenaires/partenaires.module';
 import { EquipesModule } from './equipes/equipes.module';
 import { BlogModule } from './blog/blog.module';
+import { ContactsModule } from './contacts/contacts.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { BlogModule } from './blog/blog.module';
     PartenairesModule,
     EquipesModule,
     BlogModule,
+    ContactsModule,
   ],
   controllers: [],
   providers: [],
