@@ -1,10 +1,4 @@
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  IsUrl,
-} from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class ContactCreation {
   @IsNotEmpty()
@@ -17,27 +11,22 @@ export class ContactCreation {
 
   @IsOptional()
   @IsString()
-  @IsUrl()
   facebook?: string;
 
   @IsOptional()
   @IsString()
-  @IsUrl()
   instagram?: string;
 
   @IsOptional()
   @IsString()
-  @IsUrl()
   twitter?: string;
 
   @IsOptional()
   @IsString()
-  @IsUrl()
   linkedin?: string;
 
   @IsOptional()
   @IsString()
-  @IsUrl()
   tiktok?: string;
 }
 
