@@ -1,5 +1,6 @@
 import type { Duree, Prisma } from '@prisma/client';
 import { ImageOutput } from 'src/images/images.dto';
+import { PointsFortOutput } from 'src/points-fort/points-fort.dto';
 import { ThemeOutput } from 'src/themes/themes.dto';
 
 export type ActiviteCreation = {
@@ -33,6 +34,7 @@ export type ActiviteOutput = {
   nbPersonnesMax: number;
   themes: ThemeOutput[];
   images?: ImageOutput[];
+  pointFort?: PointsFortOutput[];
   duree: Duree | null;
   latitude: number | null;
   longitude: number | null;
