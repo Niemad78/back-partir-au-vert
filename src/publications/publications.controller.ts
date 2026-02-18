@@ -52,7 +52,7 @@ export class PublicationsController {
   ) {
     const result = await this.publicationService.findOne(id);
 
-    return { ok: true, publications: result };
+    return { ok: true, publication: result };
   }
 
   @UseGuards(JwtAuthGuard)
