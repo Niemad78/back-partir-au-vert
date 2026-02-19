@@ -34,6 +34,16 @@ export class ActivitesController {
     return { ok: true, activites: result };
   }
 
+  @Get('slug/:slug')
+  async getActiviteBySlug(
+    @Param('slug')
+    slug: string,
+  ) {
+    const result = await this.activitesService.findOneBySlug(slug);
+
+    return { ok: true, activite: result };
+  }
+
   @Get(':id')
   async getActiviteById(
     @Param('id')
@@ -42,6 +52,14 @@ export class ActivitesController {
     const result = await this.activitesService.findOne(id);
 
     return { ok: true, activite: result };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('generer-slugs')
+  async genererSlugsManquants() {
+    const count = await this.activitesService.generateMissingSlugs();
+
+    return { ok: true, message: `${count} slug(s) généré(s)` };
   }
 
   @UseGuards(JwtAuthGuard)
