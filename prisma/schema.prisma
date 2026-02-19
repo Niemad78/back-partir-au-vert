@@ -43,7 +43,7 @@ model Activite {
   longitude        Decimal?          @db.Decimal(9, 6)
   adresse          String?
   accessibilite    String?           @db.LongText
-  slug             String?            @unique
+  slug             String?           @unique
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
   pointFort        PointFort[]

@@ -27,6 +27,7 @@ export type ActiviteAjoutImage = {
 export type ActiviteOutput = {
   id: string;
   nom: string;
+  slug: string | null;
   description: string;
   prix: number;
   ville: string;

@@ -14,6 +14,7 @@ export class ActivitesService {
     return {
       id: activite.id,
       nom: activite.nom,
+      slug: activite.slug,
       description: activite.description,
       prix: activite.prix,
       ville: activite.ville,
@@ -29,6 +30,36 @@ export class ActivitesService {
       adresse: activite.adresse,
       accessibilite: activite.accessibilite,
     };
+  }
+
+  private buildSlug(nom: string): string {
+    return nom
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9\s-]/g, '')
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-');
+  }
+
+  private async generateUniqueSlug(
+    nom: string,
+    excludeId?: string,
+  ): Promise<string> {
+    const base = this.buildSlug(nom);
+    let slug = base;
+    let count = 1;
+
+    while (true) {
+      const existing = await this.prismaService.activite.findUnique({
+        where: { slug },
+      });
+      if (!existing || existing.id === excludeId) break;
+      slug = `${base}-${count++}`;
+    }
+
+    return slug;
   }
 
   async findMany(): Promise<ActiviteOutput[]> {
@@ -56,11 +87,26 @@ export class ActivitesService {
     return resultat ? this.toOutput(resultat) : null;
   }
 
+  async findOneBySlug(slug: string): Promise<ActiviteOutput | null> {
+    const resultat = await this.prismaService.activite.findUnique({
+      include: {
+        themeOnActivites: { include: { theme: true } },
+        pointFort: true,
+        images: true,
+      },
+      where: { slug },
+    });
+
+    return resultat ? this.toOutput(resultat) : null;
+  }
+
   async create(body: ActiviteCreation): Promise<ActiviteOutput> {
     const { themeIds, ...data } = body;
+    const slug = await this.generateUniqueSlug(data.nom);
     const resultat = await this.prismaService.activite.create({
       data: {
         ...data,
+        slug,
         themeOnActivites: {
           create: themeIds.map((themeId) => ({ themeId })),
         },
@@ -78,11 +124,13 @@ export class ActivitesService {
   async update(id: string, body: ActiviteCreation): Promise<ActiviteOutput> {
     const { themeIds, ...data } = body;
     const uniqueThemeIds = [...new Set(themeIds)];
+    const slug = await this.generateUniqueSlug(data.nom, id);
 
     const resultat = await this.prismaService.activite.update({
       where: { id },
       data: {
         ...data,
+        slug,
         themeOnActivites: {
           deleteMany: {
             themeId: { notIn: uniqueThemeIds },

@@ -34,6 +34,16 @@ export class ActivitesController {
     return { ok: true, activites: result };
   }
 
+  @Get('slug/:slug')
+  async getActiviteBySlug(
+    @Param('slug')
+    slug: string,
+  ) {
+    const result = await this.activitesService.findOneBySlug(slug);
+
+    return { ok: true, activite: result };
+  }
+
   @Get(':id')
   async getActiviteById(
     @Param('id')
