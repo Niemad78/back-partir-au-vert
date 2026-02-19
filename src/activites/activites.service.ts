@@ -151,6 +151,23 @@ export class ActivitesService {
     return this.toOutput(resultat);
   }
 
+  async generateMissingSlugs(): Promise<number> {
+    const activitesSansSlug = await this.prismaService.activite.findMany({
+      where: { slug: null },
+      select: { id: true, nom: true },
+    });
+
+    for (const activite of activitesSansSlug) {
+      const slug = await this.generateUniqueSlug(activite.nom);
+      await this.prismaService.activite.update({
+        where: { id: activite.id },
+        data: { slug },
+      });
+    }
+
+    return activitesSansSlug.length;
+  }
+
   async delete(id: string) {
     return this.prismaService.activite.delete({
       where: { id },

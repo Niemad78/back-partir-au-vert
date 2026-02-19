@@ -55,6 +55,14 @@ export class ActivitesController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Post('generer-slugs')
+  async genererSlugsManquants() {
+    const count = await this.activitesService.generateMissingSlugs();
+
+    return { ok: true, message: `${count} slug(s) généré(s)` };
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Post('creation')
   public async createActivite(
     @Body()
