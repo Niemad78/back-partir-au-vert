@@ -19,7 +19,7 @@ import { ContactsModule } from './contacts/contacts.module';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public'),
+      rootPath: join(process.cwd(), 'public'),
       serveStaticOptions: {
         fallthrough: false,
       },
