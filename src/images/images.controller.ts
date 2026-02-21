@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   InternalServerErrorException,
   Param,
   Post,
@@ -54,6 +55,18 @@ export class ImagesController {
     });
 
     return { ok: true, imageId: createdImage.id };
+  }
+
+  @Get('/non-liees/nombre')
+  public async getNombreNonLiees() {
+    const nombre = await this.imagesService.countNonLiees();
+    return { ok: true, nombre };
+  }
+
+  @Delete('/non-liees')
+  public async supprimerNonLiees() {
+    const nombre = await this.imagesService.supprimerNonLiees();
+    return { ok: true, nombre };
   }
 
   @Delete('/suppression/:id')
